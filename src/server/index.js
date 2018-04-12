@@ -11,38 +11,41 @@ let env = process.env.NODE_ENV ? process.env.NODE_ENV : 'dev';
 
 /**********************************************************************************************************/
 
-// Setup Express pipeline
+// Setup our Express pipeline
 let app = express();
 if (env !== 'test') app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, '../../public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Import  routes
+// Import our routes
 require('./routes')(app);
 
-// Some preset server-side data structures
+// Build up the server-side data structures
+app.messages = [
+    {
+        from: 'joe',
+        msg: 'hey.'
+    }
+];
+
 app.users = [
     {
-        username: 'jdoe',
-        password: 'passWORD1!',
-        first_name: 'John',
-        last_name: 'Doe',
-        city: 'Dallas',
-        primary_email: 'alpha@beta.com',
+        username: 'ben',
+        password: 'pass',
+        first_name: 'Ben',
+        last_name: 'Black',
     },
     {
-        username: 'runaway',
-        password: 'Fun420!',
-        first_name: 'Arnold',
-        last_name: 'Schwarzenegger',
-        city: 'Bikini Bottom',
-        primary_email: 'omega@gamma.com',
+        username: 'joe',
+        password: 'pass',
+        first_name: 'Joe',
+        last_name: 'Shmo',
     }
 ];
 
 /**********************************************************************************************************/
 
-// Run server
+// Run the server itself
 let server = app.listen(port, () => {
-    console.log('Server listening on... ' + server.address().port);
+    console.log('Server listening on ' + server.address().port);
 });

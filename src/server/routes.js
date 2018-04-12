@@ -3,85 +3,49 @@
 let _ = require('underscore');
 
 module.exports = app => {
-    // Handle POST to create a logged in session
+    // Handle POST to create a user session (i.e. log on)
     app.post('/session', (req, res) => {
         if (!req.body || !req.body.username || !req.body.password) {
-            res.status(400).send({ error: 'Username and password required.' });
+            res.status(400).send({ error: 'please include username and password' });
         } else {
             let user = _.findWhere(app.users, {
                 username: req.body.username.toLowerCase()
             });
             if (!user || user.password !== req.body.password) {
-                if (user)
-                    console.log(`Wrong password.`);
-                else
-                    console.log('User not found.');
-                res.status(401).send({ error: 'Not authorized.' });
+                res.status(401).send({ error: 'unauthorized' });
             } else {
                 res.status(201).send({
                     username: user.username
                 });
-                //for now this is how we are implementing a user being logged in
-                localStorage.setItem("username", req.body.username);
             }
         }
     });
 
-    // Handle POST to register a user
-    app.post('/user', (req, res) => {
-        let data = req.body;
-        if (
-            !data ||
-            !data.username ||
-            !data.password ||
-            !data.first_name ||
-            !data.last_name
-        ) {
-            res
-                .status(400)
-                .send({
-                    error:
-                        'username, password, first_name, last_name required'
-                });
-        } else {
-            let user = _.findWhere(app.users, {
-                username: data.username.toLowerCase()
-            });
-            if (user) {
-                res.status(400).send({ error: 'username already in use' });
-            } else {
-                let newUser = _.pick(
-                    data,
-                    'username',
-                    'first_name',
-                    'last_name',
-                    'password'
-                );
-                app.users.push(newUser);
-                res.status(201).send({
-                    username: data.username
-                });
-            }
-        }
-    });
-
-
-    // Handle POST to send a new message
+    // Handle POST to create a new transaction
     app.post('/create', (req, res) => {
         let data = req.body;
-        if (!data) {
-            res.status(400).send({ error: 'No text!' });
+        console.log("data:");
+        console.log(data);
+        if (!data || !data.msg || !data.from) {
+            res.status(400).send({ error: 'please include a from user and a message' });
+        } else if (
+            !_.findWhere(app.users, { username: data.from })
+        ) {
+            res.status(404).send({ error: 'from user not found' });
         } else {
-            //create new message and push it to list of messages
-            // app.transactions.push(newTransaction);
-
-            // res.status(201).send({
-            //     hash: newTransaction.hash.substring(0, 8)
-            // });
-            console.log("we have yet to implement creating new message.");
+            //add new message to list of messages in server. the index will help us maintain order
+            let prevMsg = app.messages[app.messages.length - 1];
+            let newMsg = {
+                index: prevMsg.index + 1,
+                from: data.from,
+                msg: data.msg
+            };
+            app.messages.push(newMsg);
+            //send back this message
+            res.status(201).send({
+                from: data.from,
+                msg: data.msg
+            });
         }
     });
-
-    //Handle get to display list of message
-    //app.get('/messages'
 };
