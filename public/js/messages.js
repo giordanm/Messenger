@@ -3,6 +3,10 @@ $('.form-horizontal').on('submit', function(event) {
     // Prevent the page from reloading
     event.preventDefault();
 
+    $.get( "/messages", function( data ) {
+      $( "#mymessages" ).html( data );
+    });
+
     // process the form
     $.ajax({
         type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
