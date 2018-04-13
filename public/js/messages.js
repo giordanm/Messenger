@@ -1,16 +1,15 @@
+$.get( "/messages", function( data ) {
+    data.forEach(msg => {
+        $( "#mymessages" ).append('<p>From: '+msg.from+'</p>');
+        $( "#mymessages" ).append('<p>Text: '+msg.msg+'</p>');
+        $( "#mymessages" ).append('<br>');
+    });
+});
+
 $('.form-horizontal').on('submit', function(event) {
 
     // Prevent the page from reloading
     event.preventDefault();
-
-    $.get( "/messages", function( data ) {
-        data.forEach(msg => {
-            $( "#mymessages" ).append('<p>From: '+msg.from+'</p>');
-            $( "#mymessages" ).append('<p>Text: '+msg.msg+'</p>');
-            $( "#mymessages" ).append('<br>');
-        });
-
-    });
 
     // process the form
     $.ajax({
