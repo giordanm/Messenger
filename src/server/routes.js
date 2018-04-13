@@ -2,11 +2,10 @@
 
 let _ = require('underscore');
 let User = require('../models/User.model');
+let Message = require('../models/Message.model');
 
 module.exports = app => {
     app.get("/users", (req, res) =>{
-        let newuser =  new User({user: "ben", message: 'hi'});
-        newuser.save();
         User.find({}).exec ((err, elems) => {
             if (err) {
                 res.send('error');
@@ -15,6 +14,17 @@ module.exports = app => {
             }
         });
     });
+
+    app.get("/messages", (req, res) =>{
+        Message.find({}).exec ((err, elems) => {
+            if (err) {
+                res.send('error');
+            } else {
+                res.json(elems);
+            }
+        });
+    });
+
     // Handle POST to create a user session (i.e. log on)
     app.post('/session', (req, res) => {
         if (!req.body || !req.body.username || !req.body.password) {
@@ -52,6 +62,8 @@ module.exports = app => {
                 from: data.from,
                 msg: data.msg
             };
+            let newmessage =  new Message(newMsg);
+            newmessage.save();
             app.messages.push(newMsg);
             //send back this message
             res.status(201).send({
