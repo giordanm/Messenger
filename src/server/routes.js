@@ -1,8 +1,20 @@
 'use strict';
 
 let _ = require('underscore');
+let User = require('../models/User.model');
 
 module.exports = app => {
+    app.get("/users", (req, res) =>{
+        let newuser =  new User({user: "ben", message: 'hi'});
+        newuser.save();
+        User.find({}).exec ((err, elems) => {
+            if (err) {
+                res.send('error');
+            } else {
+                res.json(elems);
+            }
+        });
+    });
     // Handle POST to create a user session (i.e. log on)
     app.post('/session', (req, res) => {
         if (!req.body || !req.body.username || !req.body.password) {

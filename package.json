@@ -4,9 +4,10 @@
   "description": "Web chat",
   "main": "./src/server/index.js",
   "dependencies": {
-    "morgan": "^1.7.0",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
+    "mongoose": "^5.0.14",
+    "morgan": "^1.7.0",
     "prettier": "^1.10.2",
     "underscore": "^1.8.3"
   },
