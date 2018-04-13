@@ -4,7 +4,12 @@ $('.form-horizontal').on('submit', function(event) {
     event.preventDefault();
 
     $.get( "/messages", function( data ) {
-      $( "#mymessages" ).html( data );
+        data.forEach(msg => {
+            $( "#mymessages" ).append('<p>From: '+msg.from+'</p>');
+            $( "#mymessages" ).append('<p>Text: '+msg.msg+'</p>');
+            $( "#mymessages" ).append('<br>');
+        });
+
     });
 
     // process the form
