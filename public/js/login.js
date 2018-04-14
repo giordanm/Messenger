@@ -20,7 +20,7 @@ $('.form-horizontal').on('submit', function(event) {
                 document.getElementsByClassName('error-block')[0].innerHTML="404 Error";
             },
             201: function () {
-                window.location = '/messages.html?username=' + $("#username");
+                window.location = '/messages.html';
             }
         }
     });

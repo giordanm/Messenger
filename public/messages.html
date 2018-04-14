@@ -12,17 +12,38 @@
 <div class="error-block">
     <p id="errorMsg"></p>
 </div>
-<form class="form-horizontal">
-    <div>
-        <label for="from"> From: </label>
-        <input type="text" id="from" name="from"/>
-    </div>
-    <div>
-        <label for="msg"> Message: </label>
-        <input type="text" id="msg" name="msg"/>
-    </div>
-    <button type="submit">Submit</button>
-</form>
+
+<header>
+    <h1 align="left">Register New User</h1>
+</header>
+
+<br>
+<!--<div class="col-xs-4"></div>-->
+<div class="container">
+    <form class="form-horizontal">
+        <div class ="form-group">
+            <label for="username"> Username: </label>
+            <input type="text" style="width:250px" class="form-control" id="username" name="username" placeholder="e.g. Mr_C_1873"/>
+        </div>
+
+        <div class ="form-group">
+            <label for="password"> Password: </label>
+            <input type="password" style="width:250px" class="form-control" id="password" name="password" placeholder="Choose wisely..."/>
+        </div>
+
+        <div class="form-group">
+            <label for="first_name"> First Name: </label>
+            <input type="text" style="width:250px" class="form-control" id="first_name" name="first_name" placeholder="John"/>
+        </div>
+
+        <div class="form-group">
+            <label for="last_name"> Last Name: </label>
+            <input type="text" style="width:250px" class="form-control" id="last_name" name="last_name" placeholder="Doe"/>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
 <div id="mymessages"></div>
 <script src="/js/messages.js"></script>
 </body>
