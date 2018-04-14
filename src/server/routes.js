@@ -5,16 +5,6 @@ let User = require('../models/User.model');
 let Message = require('../models/Message.model');
 
 module.exports = app => {
-    app.get("/users", (req, res) =>{
-        User.find({}).exec ((err, elems) => {
-            if (err) {
-                res.send('error');
-            } else {
-                res.json(elems);
-            }
-        });
-    });
-
     app.get("/messages", (req, res) =>{
         Message.find({}).exec ((err, elems) => {
             if (err) {
@@ -24,6 +14,40 @@ module.exports = app => {
             }
         });
     });
+
+    app.post("/register", (req, res) =>{
+        console.log(req.body);
+        if (!req.body || !req.body.username || !req.body.password || req.body.first_name || req.body.last_name) {
+            res.status(400).send({error: 'please include all fields'});
+        }
+        else {
+            //check if username already exists in database
+            User.findOne({username: req.body.username}, function (err, userInfo) {
+                if (err) {
+                    res.status(500).end(); //right error code?
+                }
+                else if (userInfo) {
+                    console.log("User already exists.");
+                    res.status(409).send({error: `User already exists`});
+                }
+                else {
+                    console.log("User doesn't exist yet. GOOD");
+                    console.log(req.body.username);
+                    //add user to database
+                    let newUser = {
+                        username: req.body.username,
+                        password: req.body.password,
+                        first_name: req.body.first_name,
+                        last_name: req.body.last_name
+                    };
+                    let newuser =  new User(newUser);
+                    newuser.save();
+                    res.status(201).end();
+                }
+            })
+        }
+    });
+
 
     // Handle POST to create a user session (i.e. log on)
     app.post('/session', (req, res) => {
@@ -48,12 +72,8 @@ module.exports = app => {
         let data = req.body;
         console.log("data:");
         console.log(data);
-        if (!data || !data.msg || !data.from) {
-            res.status(400).send({ error: 'please include a from user and a message' });
-        } else if (
-            !_.findWhere(app.users, { username: data.from })
-        ) {
-            res.status(404).send({ error: 'from user not found' });
+        if (!data || !data.msg) {
+            res.status(400).send({ error: 'please include a message' });
         } else {
             //add new message to list of messages in server. the index will help us maintain order
             let prevMsg = app.messages[app.messages.length - 1];
@@ -67,7 +87,7 @@ module.exports = app => {
             app.messages.push(newMsg);
             //send back this message
             res.status(201).send({
-                from: data.from,
+                from: req.body.user,
                 msg: data.msg
             });
         }
