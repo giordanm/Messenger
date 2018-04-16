@@ -21,6 +21,10 @@ $('.form-horizontal').on('submit', function(event) {
                 document.getElementsByClassName('error-block')[0].innerHTML="Internal Server Error";
             },
             201: function () {
+                console.log('mydata');
+                // console.log(data);
+                console.log($("#username").val());
+                localStorage["username"] = $("#username").val();
                 window.location = '/messages.html';
             }
         }

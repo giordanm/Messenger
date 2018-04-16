@@ -3,8 +3,10 @@ if (localStorage.getItem("username")=="") {
 }
 
 $.get( "/messages", function( data ) {
+    console.log(data);
     data.forEach(msg => {
-        $( "#mymessages" ).append('<p>From: '+localStorage.getItem("username")+'</p>');
+
+        $( "#mymessages" ).append('<p>From: '+msg.from+'</p>');
         $( "#mymessages" ).append('<p>Text: '+msg.msg+'</p>');
         $( "#mymessages" ).append('<br>');
     });

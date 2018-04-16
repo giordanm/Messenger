@@ -17,7 +17,8 @@ module.exports = app => {
 
     app.post("/register", (req, res) =>{
         console.log(req.body);
-        if (!req.body || !req.body.username || !req.body.password || req.body.first_name || req.body.last_name) {
+        if (!req.body || !req.body.username || !req.body.password || !req.body.first_name || !req.body.last_name) {
+            console.log('not all filled');
             res.status(400).send({error: 'please include all fields'});
         }
         else {
@@ -42,7 +43,7 @@ module.exports = app => {
                     };
                     let newuser =  new User(newUser);
                     newuser.save();
-                    res.status(201).end();
+                    res.status(201).send(req.body.username).end();
                 }
             })
         }
@@ -54,16 +55,31 @@ module.exports = app => {
         if (!req.body || !req.body.username || !req.body.password) {
             res.status(400).send({ error: 'please include username and password' });
         } else {
-            let user = _.findWhere(app.users, {
-                username: req.body.username.toLowerCase()
-            });
-            if (!user || user.password !== req.body.password) {
-                res.status(401).send({ error: 'unauthorized' });
-            } else {
-                res.status(201).send({
-                    username: user.username
-                });
-            }
+            // let user = _.findWhere(app.users, {
+            //     username: req.body.username.toLowerCase()
+            // });
+            // console.log(req.body);
+
+            // User.find({}).exec ((err, elems) => {
+            //     if (err) {
+            //         res.send('error');
+            //     } else {
+            //         console.log(elems);
+            //         // res.json(elems);
+            //     }
+            // });
+
+            User.findOne({username: req.body.username.toLowerCase()}, (err, user) => {
+                console.log(user);
+                if (!user || user.password !== req.body.password) {
+                    res.status(401).send({ error: 'unauthorized' });
+                } else {
+                    res.status(201).send({
+                        username: user.username
+                    });
+                }
+              });
+
         }
     });
 
@@ -79,7 +95,7 @@ module.exports = app => {
             let prevMsg = app.messages[app.messages.length - 1];
             let newMsg = {
                 index: prevMsg.index + 1,
-                from: data.from,
+                from: data.username,
                 msg: data.msg
             };
             let newmessage =  new Message(newMsg);
@@ -87,7 +103,7 @@ module.exports = app => {
             app.messages.push(newMsg);
             //send back this message
             res.status(201).send({
-                from: req.body.user,
+                from: data.username,
                 msg: data.msg
             });
         }
